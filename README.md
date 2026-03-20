@@ -66,22 +66,33 @@ composer require --dev uxcode-fr/image-optimizer
 
 ## Configuration
 
-### Laravel / Symfony / vanilla PHP
-
-Publish (or create) `config/image-optimizer.php` at your project root:
+### Laravel
 
 ```bash
-# Laravel
 php artisan vendor:publish --tag=image-optimizer-config
+```
 
-# Standalone
+### Symfony / vanilla PHP
+
+```bash
 cp vendor/uxcode-fr/image-optimizer/config/image-optimizer.php config/image-optimizer.php
 ```
+
+### config/image-optimizer.php
 
 ```php
 return [
     'source'      => 'resources/images',
     'destination' => 'public/img',
+
+    'quality' => [
+        'avif' => 60,
+        'webp' => 82,
+        'jpg'  => 85,
+    ],
+
+    'formats'   => ['avif', 'webp', 'jpg'],
+    'densities' => [1, 2],
 
     'folders' => [
         'product' => [200, 280],   // generates -200, -200@2x, -280, -280@2x variants
@@ -99,6 +110,9 @@ return [
     "image-optimizer": {
       "source": "resources/images",
       "destination": "public/img",
+      "quality": { "avif": 60, "webp": 82, "jpg": 85 },
+      "formats": ["avif", "webp", "jpg"],
+      "densities": [1, 2],
       "folders": {
         "product": [200, 280],
         "author": [48, 128]
