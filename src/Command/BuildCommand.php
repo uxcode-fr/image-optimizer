@@ -41,6 +41,18 @@ class BuildCommand extends Command
             return Command::FAILURE;
         }
 
+        if (empty($folderConfig)) {
+            $output->writeln('<comment>Aucun dossier configuré. Définissez vos dossiers dans config/image-optimizer.php :</comment>');
+            $output->writeln('');
+            $output->writeln("  <info>'folders'</> => [");
+            $output->writeln("      <info>'product'</> => [200, 280],");
+            $output->writeln("      <info>'author'</>  => [48, 128],");
+            $output->writeln("      <info>'article'</> => null,  <fg=gray>// convert only, no resize</>");
+            $output->writeln('  ],');
+            $output->writeln('');
+            return Command::FAILURE;
+        }
+
         $finder = Finder::create()->files()->name(['*.png', '*.jpg', '*.jpeg'])->in($sourcePath);
 
         if ($onlyFolder !== null) {
