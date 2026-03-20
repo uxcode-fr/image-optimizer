@@ -19,8 +19,13 @@ final class Config
         $this->source      = $data['source']      ?? 'resources/images';
         $this->destination = $data['destination'] ?? 'public/img';
         $this->quality     = array_merge(self::DEFAULT_QUALITY, $data['quality'] ?? []);
-        $this->densities   = $data['densities']   ?? [1, 2];
-        $this->folders     = $data['folders']     ?? [];
+        $this->densities = array_values((array) ($data['densities'] ?? [1, 2]));
+
+        $folders = $data['folders'] ?? [];
+        $this->folders = array_map(
+            static fn($widths) => $widths === null ? null : array_values((array) $widths),
+            $folders
+        );
 
         $formats = $data['formats'] ?? self::ALLOWED_FORMATS;
         $invalid = array_diff($formats, self::ALLOWED_FORMATS);
