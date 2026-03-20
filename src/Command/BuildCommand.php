@@ -205,10 +205,10 @@ class BuildCommand extends Command
         $saving    = round((1 - $finalSize / $originalSize) * 100);
 
         if ($saving >= 0) {
-            $output->writeln("  <fg=green>✓</>  {$destLabel}/{$label} (<fg=green>{$finalSize} KB</>, <fg=green><options=bold>-{$saving}%</></> 🚀)");
+            $output->writeln("  <fg=green>✓</>  {$destLabel}/{$label} (<fg=green>{$finalSize} KB</>, <fg=green><options=bold>-{$saving}%</></>) 🚀");
         } else {
             $increase = abs($saving);
-            $output->writeln("  <fg=red>✓</>  {$destLabel}/{$label} (<fg=red>{$finalSize} KB</>, <fg=red><options=bold>+{$increase}%</>)");
+            $output->writeln("  <fg=red>✓</>  {$destLabel}/{$label} (<fg=red>{$finalSize} KB</>, <fg=red><options=bold>+{$increase}%</>)</>");
         }
     }
 
