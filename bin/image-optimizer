@@ -1,0 +1,24 @@
+#!/usr/bin/env php
+<?php
+
+$autoload = $GLOBALS['_composer_autoload_path']
+    ?? __DIR__ . '/../vendor/autoload.php';
+
+if (!file_exists($autoload)) {
+    fwrite(STDERR, "Composer autoloader not found. Run 'composer install'.\n");
+    exit(1);
+}
+
+require_once $autoload;
+
+use Composer\InstalledVersions;
+use ImageOptimizer\Command\BuildCommand;
+use Symfony\Component\Console\Application;
+
+$version = InstalledVersions::getVersion('uxcode-fr/image-optimizer') ?? 'dev';
+$app = new Application('Image Optimizer', $version);
+method_exists($app, 'addCommand')
+    ? $app->addCommand(new BuildCommand())
+    : $app->add(new BuildCommand());
+$app->setDefaultCommand('build');
+$app->run();

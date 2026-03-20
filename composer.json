@@ -1,0 +1,51 @@
+{
+  "name": "uxcode-fr/image-optimizer",
+  "description": "Converts PNG/JPG images to AVIF, WebP and JPG in multiple sizes via Imagick.",
+  "type": "library",
+  "license": "MIT",
+  "homepage": "https://github.com/uxcode-fr/image-optimizer",
+  "keywords": ["image", "optimization", "avif", "webp", "responsive", "dev"],
+  "authors": [
+    {
+      "name": "Arnaud Lemercier",
+      "email": "arnaud@wixiweb.fr",
+      "homepage": "https://github.com/uxcode-fr",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/uxcode-fr/image-optimizer/issues",
+    "source": "https://github.com/uxcode-fr/image-optimizer"
+  },
+  "require": {
+    "php": ">=8.1",
+    "ext-imagick": "*",
+    "composer-runtime-api": "^2.0",
+    "symfony/console": ">=6.0",
+    "symfony/finder": ">=6.0"
+  },
+  "bin": [
+    "bin/image-optimizer"
+  ],
+  "autoload": {
+    "psr-4": {
+      "ImageOptimizer\\": "src/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "ImageOptimizer\\ImageOptimizerServiceProvider"
+      ]
+    }
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true,
+  "scripts": {
+    "post-install-cmd": ["ImageOptimizer\\DependencyChecker::check"],
+    "post-update-cmd":  ["ImageOptimizer\\DependencyChecker::check"]
+  }
+}
