@@ -1,6 +1,6 @@
 # Image Optimizer
 
-**Converts PNG/JPG images to AVIF, WebP and JPG in multiple sizes via Imagick.**
+**Converts PNG/JPG images to AVIF, WebP and JPG in multiple sizes.**
 
 Works with **Laravel**, **Symfony**, and **vanilla PHP** projects.
 
@@ -142,16 +142,108 @@ vendor/bin/image-optimizer --clean
 
 ---
 
+## HTML usage examples
+
+### `<picture>` with multiple formats and sizes
+
+```html
+<picture>
+  <source
+    type="image/avif"
+    srcset="
+      /img/product/hero-200.avif   1x,
+      /img/product/hero-200@2x.avif 2x
+    "
+    media="(max-width: 400px)"
+  >
+  <source
+    type="image/avif"
+    srcset="
+      /img/product/hero-280.avif   1x,
+      /img/product/hero-280@2x.avif 2x
+    "
+  >
+  <source
+    type="image/webp"
+    srcset="
+      /img/product/hero-200.webp   1x,
+      /img/product/hero-200@2x.webp 2x
+    "
+    media="(max-width: 400px)"
+  >
+  <source
+    type="image/webp"
+    srcset="
+      /img/product/hero-280.webp   1x,
+      /img/product/hero-280@2x.webp 2x
+    "
+  >
+  <img
+    src="/img/product/hero-280.jpg"
+    alt="Product"
+    width="280"
+    height="186"
+    loading="lazy"
+  >
+</picture>
+```
+
+The browser picks the first `<source>` it supports, from top to bottom — AVIF first, then WebP, then JPG as a universal fallback.
+
+### Simple `srcset` (single format, multiple widths)
+
+```html
+<img
+  src="/img/product/hero-280.jpg"
+  srcset="
+    /img/product/hero-200.webp 200w,
+    /img/product/hero-280.webp 280w
+  "
+  sizes="(max-width: 400px) 200px, 280px"
+  alt="Product"
+  loading="lazy"
+>
+```
+
+### Avatar (fixed size, HiDPI only)
+
+```html
+<picture>
+  <source type="image/avif" srcset="/img/author/avatar-48.avif 1x, /img/author/avatar-48@2x.avif 2x">
+  <source type="image/webp" srcset="/img/author/avatar-48.webp 1x, /img/author/avatar-48@2x.webp 2x">
+  <img src="/img/author/avatar-48.jpg" alt="Author" width="48" height="48" loading="lazy">
+</picture>
+```
+
+### Laravel Blade
+
+```blade
+<picture>
+  <source
+    type="image/avif"
+    srcset="{{ asset('img/product/hero-200.avif') }} 1x, {{ asset('img/product/hero-200@2x.avif') }} 2x"
+    media="(max-width: 400px)"
+  >
+  <source
+    type="image/avif"
+    srcset="{{ asset('img/product/hero-280.avif') }} 1x, {{ asset('img/product/hero-280@2x.avif') }} 2x"
+  >
+  <img src="{{ asset('img/product/hero-280.jpg') }}" alt="Product" width="280" loading="lazy">
+</picture>
+```
+
+---
+
 ## Configuration options
 
-| Key           | Default              | Description                                         |
-|---------------|----------------------|-----------------------------------------------------|
-| `source`      | `resources/images`        | Source folder (PNG/JPG), relative to project root    |
-| `destination` | `public/img`              | Output folder, relative to project root              |
-| `quality`     | `['avif'=>60, 'webp'=>82, 'jpg'=>85]` | Compression quality per format (1–100) |
-| `formats`     | `['avif', 'webp', 'jpg']` | Output formats — any subset of `avif`, `webp`, `jpg` |
-| `densities`   | `[1, 2]`                  | Pixel density multipliers (`1` = base, `2` = @2x…)  |
-| `folders`     | `[]`                      | Per-folder width list (`null` = convert only)        |
+| Key           | Default                               | Description                                          |
+|---------------|---------------------------------------|------------------------------------------------------|
+| `source`      | `resources/images`                    | Source folder (PNG/JPG), relative to project root    |
+| `destination` | `public/img`                          | Output folder, relative to project root              |
+| `quality`     | `['avif'=>60, 'webp'=>82, 'jpg'=>85]` | Compression quality per format (1–100)               |
+| `formats`     | `['avif', 'webp', 'jpg']`             | Output formats — any subset of `avif`, `webp`, `jpg` |
+| `densities`   | `[1, 2]`                              | Pixel density multipliers (`1` = base, `2` = @2x…)   |
+| `folders`     | `[]`                                  | Per-folder width list (`null` = convert only)        |
 
 ### Obsolete image cleanup
 
