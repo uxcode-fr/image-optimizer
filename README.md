@@ -4,6 +4,8 @@
 
 Works with **Laravel**, **Symfony**, and **vanilla PHP** projects.
 
+![Screenshot](https://raw.githubusercontent.com/uxcode-fr/image-optimizer/main/screenshot.png)
+
 ---
 
 ## Why use it?
