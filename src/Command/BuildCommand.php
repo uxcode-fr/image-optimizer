@@ -36,12 +36,12 @@ class BuildCommand extends Command
         $onlyFolder   = $input->getOption('folder');
 
         if (!is_dir($sourcePath)) {
-            $output->writeln("❌ <error>Le dossier source n'existe pas : {$sourcePath}</error>");
+            $output->writeln("❌ <error>Source directory not found: {$sourcePath}</error>");
             return Command::FAILURE;
         }
 
         if (empty($folderConfig)) {
-            $output->writeln('⚠️  <comment>Aucun dossier configuré. Définissez vos dossiers dans config/image-optimizer.php :</comment>');
+            $output->writeln('⚠️  <comment>No folders configured. Define your folders in config/image-optimizer.php:</comment>');
             $output->writeln('');
             $output->writeln("  <info>'folders'</> => [");
             $output->writeln("      <info>'product'</> => [200, 280],");
@@ -85,7 +85,7 @@ class BuildCommand extends Command
                             $dest  = "{$destDir}/{$basename}-{$width}{$suffix}.{$format}";
 
                             if (!$force && file_exists($dest)) {
-                                $output->writeln("  <fg=gray>–</>  {$config->destination}/{$label} <fg=gray>(ignoré)</>");
+                                $output->writeln("  <fg=gray>–</>  {$config->destination}/{$label} <fg=gray>(skipped)</>");
                                 $skipped++;
                                 continue;
                             }
@@ -108,7 +108,7 @@ class BuildCommand extends Command
                     $dest  = "{$destDir}/{$basename}.{$format}";
 
                     if (!$force && file_exists($dest)) {
-                        $output->writeln("  <fg=gray>–</>  {$config->destination}/{$label} <fg=gray>(ignoré)</>");
+                        $output->writeln("  <fg=gray>–</>  {$config->destination}/{$label} <fg=gray>(skipped)</>");
                         $skipped++;
                         continue;
                     }
@@ -132,7 +132,7 @@ class BuildCommand extends Command
             ? $this->cleanObsoleteImages($sourcePath, $outputPath, $folderConfig, $formats, $densities, $config->destination, $onlyFolder, $output)
             : 0;
 
-        $output->writeln("<info>{$generated} image(s) générée(s), {$skipped} ignorée(s), {$deleted} supprimée(s).</info>");
+        $output->writeln("<info>{$generated} image(s) generated, {$skipped} skipped, {$deleted} deleted.</info>");
 
         return Command::SUCCESS;
     }
@@ -194,7 +194,7 @@ class BuildCommand extends Command
                 $relative = $folder . '/' . $file->getRelativePathname();
                 if (!isset($expected[$relative])) {
                     unlink($file->getRealPath());
-                    $output->writeln("  <fg=red>✗</>  {$destinationLabel}/{$relative} <fg=red>(supprimé)</>");
+                    $output->writeln("  <fg=red>✗</>  {$destinationLabel}/{$relative} <fg=red>(deleted)</>");
                     $deleted++;
                 }
             }

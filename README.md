@@ -152,11 +152,11 @@ vendor/bin/image-optimizer --clean
   ✓  public/img/product/hero-200@2x.jpg (61 KB, -75% 🚀)
 
 🖼️   Optimizing author/avatar.png (18 KB)...
-  –  public/img/author/avatar-48.avif (ignoré)
-  –  public/img/author/avatar-48.webp (ignoré)
-  –  public/img/author/avatar-48.jpg (ignoré)
+  –  public/img/author/avatar-48.avif (skipped)
+  –  public/img/author/avatar-48.webp (skipped)
+  –  public/img/author/avatar-48.jpg (skipped)
 
-6 image(s) générée(s), 3 ignorée(s), 0 supprimée(s).
+6 image(s) generated, 3 skipped, 0 deleted.
 ```
 
 ---
