@@ -208,7 +208,7 @@ class BuildCommand extends Command
             $output->writeln("  <fg=green>✓</>  {$destLabel}/{$label} (<fg=green>{$finalSize} KB</>, <fg=green><options=bold>-{$saving}%</></>) 🚀");
         } else {
             $increase = abs($saving);
-            $output->writeln("  <fg=red>✓</>  {$destLabel}/{$label} (<fg=red>{$finalSize} KB</>, <fg=red><options=bold>+{$increase}%</>)</>");
+            $output->writeln("  <fg=red>✓</>  {$destLabel}/{$label} (<fg=red>{$finalSize} KB</>, <fg=red><options=bold>+{$increase}%</></>)");
         }
     }
 
