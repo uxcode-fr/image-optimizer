@@ -92,9 +92,7 @@ class BuildCommand extends Command
 
                             try {
                                 $this->convertImage($file->getRealPath(), $dest, $format, $quality, $width * $density);
-                                $finalSize = round(filesize($dest) / 1024, 2);
-                                $saving    = round((1 - $finalSize / $originalSize) * 100);
-                                $output->writeln("  <fg=green>✓</>  {$config->destination}/{$label} (<fg=green>{$finalSize} KB</>, <fg=green><options=bold>-{$saving}%</></> 🚀)");
+                                $this->writelnResult($output, $config->destination, $label, $dest, $originalSize);
                                 $generated++;
                             } catch (\Exception $e) {
                                 $output->writeln("  <error>✗</> Error on {$label}: " . $e->getMessage());
@@ -115,9 +113,7 @@ class BuildCommand extends Command
 
                     try {
                         $this->convertImage($file->getRealPath(), $dest, $format, $quality);
-                        $finalSize = round(filesize($dest) / 1024, 2);
-                        $saving    = round((1 - $finalSize / $originalSize) * 100);
-                        $output->writeln("  <fg=green>✓</>  {$config->destination}/{$label} (<fg=green>{$finalSize} KB</>, <fg=green><options=bold>-{$saving}%</></> 🚀)");
+                        $this->writelnResult($output, $config->destination, $label, $dest, $originalSize);
                         $generated++;
                     } catch (\Exception $e) {
                         $output->writeln("  <error>✗</> Error on {$label}: " . $e->getMessage());
@@ -201,6 +197,19 @@ class BuildCommand extends Command
         }
 
         return $deleted;
+    }
+
+    private function writelnResult(OutputInterface $output, string $destLabel, string $label, string $dest, float $originalSize): void
+    {
+        $finalSize = round(filesize($dest) / 1024, 2);
+        $saving    = round((1 - $finalSize / $originalSize) * 100);
+
+        if ($saving >= 0) {
+            $output->writeln("  <fg=green>✓</>  {$destLabel}/{$label} (<fg=green>{$finalSize} KB</>, <fg=green><options=bold>-{$saving}%</></> 🚀)");
+        } else {
+            $increase = abs($saving);
+            $output->writeln("  <fg=red>✓</>  {$destLabel}/{$label} (<fg=red>{$finalSize} KB</>, <fg=red><options=bold>+{$increase}%</>)");
+        }
     }
 
     private function convertImage(string $source, string $dest, string $format, array $quality, ?int $width = null): void
