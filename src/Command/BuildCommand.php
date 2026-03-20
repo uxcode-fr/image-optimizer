@@ -14,7 +14,6 @@ use Symfony\Component\Finder\Finder;
 #[AsCommand(name: 'build', description: 'Converts PNG/JPG images to AVIF, WebP and JPG in multiple sizes')]
 class BuildCommand extends Command
 {
-
     protected function configure(): void
     {
         $this
@@ -37,12 +36,12 @@ class BuildCommand extends Command
         $onlyFolder   = $input->getOption('folder');
 
         if (!is_dir($sourcePath)) {
-            $output->writeln("<error>Le dossier source n'existe pas : {$sourcePath}</error>");
+            $output->writeln("❌ <error>Le dossier source n'existe pas : {$sourcePath}</error>");
             return Command::FAILURE;
         }
 
         if (empty($folderConfig)) {
-            $output->writeln('<comment>Aucun dossier configuré. Définissez vos dossiers dans config/image-optimizer.php :</comment>');
+            $output->writeln('⚠️  <comment>Aucun dossier configuré. Définissez vos dossiers dans config/image-optimizer.php :</comment>');
             $output->writeln('');
             $output->writeln("  <info>'folders'</> => [");
             $output->writeln("      <info>'product'</> => [200, 280],");
@@ -63,8 +62,11 @@ class BuildCommand extends Command
         $skipped   = 0;
 
         foreach ($finder as $file) {
-            $folder   = $file->getRelativePath();
-            $basename = pathinfo($file->getFilename(), PATHINFO_FILENAME);
+            $folder       = $file->getRelativePath();
+            $basename     = pathinfo($file->getFilename(), PATHINFO_FILENAME);
+            $originalSize = round(filesize($file->getRealPath()) / 1024, 2);
+
+            $output->writeln('🖼️   Optimizing <fg=blue>' . $file->getRelativePathname() . '</> (<fg=red>' . $originalSize . ' KB</>)...');
 
             $destDir = rtrim($outputPath . '/' . $folder, '/');
             if (!is_dir($destDir) && !mkdir($destDir, 0755, true) && !is_dir($destDir)) {
@@ -83,14 +85,20 @@ class BuildCommand extends Command
                             $dest  = "{$destDir}/{$basename}-{$width}{$suffix}.{$format}";
 
                             if (!$force && file_exists($dest)) {
-                                $output->writeln("  <fg=gray>ignoré</>   {$config->destination}/{$label}");
+                                $output->writeln("  <fg=gray>–</>  {$config->destination}/{$label} <fg=gray>(ignoré)</>");
                                 $skipped++;
                                 continue;
                             }
 
-                            $this->convertImage($file->getRealPath(), $dest, $format, $quality, $width * $density);
-                            $output->writeln("  <info>créé</>     {$config->destination}/{$label}");
-                            $generated++;
+                            try {
+                                $this->convertImage($file->getRealPath(), $dest, $format, $quality, $width * $density);
+                                $finalSize = round(filesize($dest) / 1024, 2);
+                                $saving    = round((1 - $finalSize / $originalSize) * 100);
+                                $output->writeln("  <fg=green>✓</>  {$config->destination}/{$label} (<fg=green>{$finalSize} KB</>, <fg=green><options=bold>-{$saving}%</></> 🚀)");
+                                $generated++;
+                            } catch (\Exception $e) {
+                                $output->writeln("  <error>✗</> Error on {$label}: " . $e->getMessage());
+                            }
                         }
                     }
                 }
@@ -100,23 +108,30 @@ class BuildCommand extends Command
                     $dest  = "{$destDir}/{$basename}.{$format}";
 
                     if (!$force && file_exists($dest)) {
-                        $output->writeln("  <fg=gray>ignoré</>   {$config->destination}/{$label}");
+                        $output->writeln("  <fg=gray>–</>  {$config->destination}/{$label} <fg=gray>(ignoré)</>");
                         $skipped++;
                         continue;
                     }
 
-                    $this->convertImage($file->getRealPath(), $dest, $format, $quality);
-                    $output->writeln("  <info>créé</>     {$config->destination}/{$label}");
-                    $generated++;
+                    try {
+                        $this->convertImage($file->getRealPath(), $dest, $format, $quality);
+                        $finalSize = round(filesize($dest) / 1024, 2);
+                        $saving    = round((1 - $finalSize / $originalSize) * 100);
+                        $output->writeln("  <fg=green>✓</>  {$config->destination}/{$label} (<fg=green>{$finalSize} KB</>, <fg=green><options=bold>-{$saving}%</></> 🚀)");
+                        $generated++;
+                    } catch (\Exception $e) {
+                        $output->writeln("  <error>✗</> Error on {$label}: " . $e->getMessage());
+                    }
                 }
             }
+
+            $output->writeln('');
         }
 
         $deleted = $clean
             ? $this->cleanObsoleteImages($sourcePath, $outputPath, $folderConfig, $formats, $densities, $config->destination, $onlyFolder, $output)
             : 0;
 
-        $output->writeln('');
         $output->writeln("<info>{$generated} image(s) générée(s), {$skipped} ignorée(s), {$deleted} supprimée(s).</info>");
 
         return Command::SUCCESS;
@@ -179,7 +194,7 @@ class BuildCommand extends Command
                 $relative = $folder . '/' . $file->getRelativePathname();
                 if (!isset($expected[$relative])) {
                     unlink($file->getRealPath());
-                    $output->writeln("  <fg=red>supprimé</> {$destinationLabel}/{$relative}");
+                    $output->writeln("  <fg=red>✗</>  {$destinationLabel}/{$relative} <fg=red>(supprimé)</>");
                     $deleted++;
                 }
             }

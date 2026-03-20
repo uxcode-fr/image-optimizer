@@ -143,15 +143,20 @@ vendor/bin/image-optimizer --clean
 ### Output example
 
 ```
-  créé     public/img/product/hero-200.avif
-  créé     public/img/product/hero-200.webp
-  créé     public/img/product/hero-200.jpg
-  créé     public/img/product/hero-200@2x.avif
-  créé     public/img/product/hero-200@2x.webp
-  créé     public/img/product/hero-200@2x.jpg
-  ignoré   public/img/author/avatar-48.avif
+🖼️   Optimizing product/hero.png (245 KB)...
+  ✓  public/img/product/hero-200.avif (12 KB, -95% 🚀)
+  ✓  public/img/product/hero-200.webp (18 KB, -93% 🚀)
+  ✓  public/img/product/hero-200.jpg (22 KB, -91% 🚀)
+  ✓  public/img/product/hero-200@2x.avif (38 KB, -84% 🚀)
+  ✓  public/img/product/hero-200@2x.webp (52 KB, -79% 🚀)
+  ✓  public/img/product/hero-200@2x.jpg (61 KB, -75% 🚀)
 
-6 image(s) générée(s), 1 ignorée(s), 0 supprimée(s).
+🖼️   Optimizing author/avatar.png (18 KB)...
+  –  public/img/author/avatar-48.avif (ignoré)
+  –  public/img/author/avatar-48.webp (ignoré)
+  –  public/img/author/avatar-48.jpg (ignoré)
+
+6 image(s) générée(s), 3 ignorée(s), 0 supprimée(s).
 ```
 
 ---
