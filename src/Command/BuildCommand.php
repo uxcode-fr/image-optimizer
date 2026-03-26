@@ -223,6 +223,7 @@ class BuildCommand extends Command
 
         $imagickFormat = $format === 'jpg' ? 'jpeg' : $format;
         $image->setImageFormat($imagickFormat);
+        $image->setCompressionQuality($quality[$format]);
         $image->setImageCompressionQuality($quality[$format]);
 
         $image->writeImage($dest);
